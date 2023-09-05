@@ -9,13 +9,12 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-
-@Entity
-@Table(name = "tbl_user")
+@AllArgsConstructor
+@Table(name="tbl_user")
 public class User {
 
     @Id
@@ -28,15 +27,15 @@ public class User {
     @Column(length = 25,nullable = false)
     private String lastName;
 
-    @Column(length = 25,nullable = false,unique = true)
+    @Column(length = 25,nullable = false, unique = true)
     private String userName;
 
     @Column(length = 255,nullable = false)
     private String password;
 
-    @JoinTable(name="tbl+user_role",
-               joinColumns = @JoinColumn(name="user_id"),
-               inverseJoinColumns = @JoinColumn(name="role_id"))
-    @ManyToMany
-    private Set<Role>roles=new HashSet<>();
+    @JoinTable(name="tbl_user_role",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id"))
+    @ManyToMany(fetch=FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
 }

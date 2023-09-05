@@ -9,27 +9,27 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    private String jwtSecret = "sboot";
 
+    private String jwtSecret ="sboot";
 
-    private long jwtExpirationMs = 86400000;//60*60*24*1000
+    private long jwtExpirationMs = 86400000; // 60*60*24*1000 ( 1 GUN )
 
-    //!!!***********CENERATE TOKEN*********************
+    // !!! **********  GENERATE TOKEN ****************************
     public String generateToken(Authentication authentication){
 
-        UserDetailsImpl userDetails=(UserDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder().
                 setSubject(userDetails.getUsername()).
                 setIssuedAt(new Date()).
-                setExpiration(new Date(new Date().getTime()+jwtExpirationMs)).
-                signWith(SignatureAlgorithm.ES512,jwtSecret).
+                setExpiration(new Date(new Date().getTime() + jwtExpirationMs)).
+                signWith(SignatureAlgorithm.HS512, jwtSecret).
                 compact();
     }
 
 
-    //!!!*********** VALIDATE TOKEN **********************
-    public Boolean validateToken(String token){
+    // !!!  **********  VALIDATE TOKEN ****************************
+    public boolean validateToken(String token){
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
@@ -49,10 +49,13 @@ public class JwtUtils {
     }
 
 
+    // !!!  **********  Get UserName from TOKEN *******************
+    public String getUserNameFromJwtToken(String token){
 
-    //!!!*********** Get UserName from TOKEN *************
-    public  String getUserNameFromJwtToken(String token){
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().
+                setSigningKey(jwtSecret).
+                parseClaimsJws(token).
+                getBody().
+                getSubject();
     }
-
 }
